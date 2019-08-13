@@ -1,0 +1,19 @@
+body {
+  main {
+    min-height: 100vh;
+    background-color: rgb(236, 236, 236);
+
+    .heading {
+      img {
+        max-width: 100%;
+      }
+      h1 {
+        font-family: "Orbitron", sans-serif;
+      }
+
+      h2 {
+        font-family: "Reenie Beanie", cursive;
+      }
+    }
+  }
+}

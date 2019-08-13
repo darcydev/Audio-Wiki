@@ -23,6 +23,7 @@ export default class SearchBar extends Component {
             type="text"
             className="form-control"
             onChange={(e) => this.setState({ term: e.target.value })}
+            value={this.state.term}
             placeholder="Enter search term..."
           />
           <button className="btn btn-lg btn-primary">Search Wikipedia</button>

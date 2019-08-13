@@ -1,0 +1,17 @@
+body main {
+  min-height: 100vh;
+  background-color: #ececec;
+}
+
+body main .heading img {
+  max-width: 100%;
+}
+
+body main .heading h1 {
+  font-family: "Orbitron", sans-serif;
+}
+
+body main .heading h2 {
+  font-family: "Reenie Beanie", cursive;
+}
+/*# sourceMappingURL=index.css.map */

@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,QAAQ,CAAC;EACP,OAAO,EAAE,MAAM;CAKhB;;AAND,AAGE,QAHM,CAGN,MAAM,CAAC;EACL,MAAM,EAAE,IAAI;CACb",
+    "sources": [
+        "SpeakText.scss"
+    ],
+    "names": [],
+    "file": "SpeakText.css"
+}

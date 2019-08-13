@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import "../scss/SpeakText.css";
+
 export default class SpeakText extends Component {
   state = {
     supported: true,
@@ -9,7 +11,8 @@ export default class SpeakText extends Component {
     isPaused: false
   };
 
-  componentWillMount() {
+  // TODO: componentWillMount is being depreciated
+  UNSAFE_componentWillMount() {
     if ("speechSynthesis" in window) {
       // WebSpeech API
       this._speech = new SpeechSynthesisUtterance();

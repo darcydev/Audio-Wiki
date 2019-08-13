@@ -1,9 +1,0 @@
-{
-    "version": 3,
-    "mappings": "AAAA,AACE,WADS,CACT,MAAM,CAAC;EACL,MAAM,EAAE,IAAI;CACb",
-    "sources": [
-        "SoundControls.scss"
-    ],
-    "names": [],
-    "file": "SoundControls.css"
-}
