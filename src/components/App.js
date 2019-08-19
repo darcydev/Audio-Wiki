@@ -51,6 +51,15 @@ export default class App extends Component {
       text === "undefined"
         ? "Sorry, we haven't been able to find that Wikipedia page. Please enter a new search term."
         : text;
+
+    // If the WikiAPI has returned multiple Wiki pages, RAW_TEXT will contain the phrase "may refer to:" in the first paragraph
+    // If so, display a specific 'error message' to the User on the DOM
+    const firstParagraph = text.substring(0, text.indexOf("\n"));
+
+    if (firstParagraph.includes("may refer to:")) {
+      text =
+        "Sorry, many pages were found with that search term. Try again with something more specific.";
+    }
     // --------------- \.ERROR HANDLING ---------------
 
     this.setState({
@@ -64,19 +73,32 @@ export default class App extends Component {
   cleanText = () => {
     let rawText = this.state.text;
 
+    // At the end of a Wiki article, there may be several 'footer heading' that link to other pages. The exact headings
+    // on each is unknown.
+    // Accordingly, the below is an array of possible any 'footer heading'
+    const FOOTER_HEADINGS = [
+      "== See also ==",
+      "== Notes ==",
+      "== External links ==",
+      "== References =="
+    ];
+    // Iterate over each of the FOOTER_HEADINGS
+    // If the FOOTER_HEADING exists in cleanedText (that is, indexOf !== -1)
+    // using substring(), remove any text thereafter the indexOf
+    FOOTER_HEADINGS.forEach((x) => {
+      const headingIndex = rawText.indexOf(x);
+
+      if (headingIndex !== -1) {
+        rawText = rawText.substring(rawText, headingIndex);
+      }
+    });
+
     // The text contains several 'special characters'.
     // Remove any character that isn't a space, comma, fullstop, or alphanumeric:
     let text = rawText.replace(/[^a-z0-9 .,]/gi, "");
 
     // The text is often missing the space after a fullstop. If so, insert it:
     text = text.replace(/\.(\S)/g, ". $1");
-
-    // TODO: NOT WORKING!
-    // At the end of a Wikipedia, there is are several reference sections that link to other pages.
-    // On every page, the sections may be slightly different.
-    // The following match indicates these sections: 'Notes  References'.
-    // If found, remove them, and any text thereafter:
-    text = text.split("Notes  References")[0];
 
     this.setState({
       text: text
