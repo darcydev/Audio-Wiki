@@ -1,39 +1,37 @@
-import React, { Component } from "react";
-import TextareaAutosize from "react-autosize-textarea";
+import React, { Component } from 'react';
+import TextareaAutosize from 'react-autosize-textarea';
 
-import SearchBar from "./SearchBar";
-import SpeakText from "./SpeakText";
-
-import "../scss/App.css";
+import SearchBar from './SearchBar';
+import SpeakText from './SpeakText';
 
 // TODO: import wikipedia from "../api/wikipedia";
 
 export default class App extends Component {
   state = {
-    text: ""
+    text: ''
   };
 
-  onSearchSubmit = (term) => {
+  onSearchSubmit = term => {
     this.setState({
-      text: ""
+      text: ''
     });
 
     const BASE_URL =
-      "https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext&redirects=true&origin=*&titles=";
+      'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext&redirects=true&origin=*&titles=';
 
     const URL = BASE_URL + encodeURI(term);
 
     fetch(URL)
-      .then((resp) => resp.json())
-      .then((jsonData) => this.getRawText(jsonData.query.pages))
+      .then(resp => resp.json())
+      .then(jsonData => this.getRawText(jsonData.query.pages))
       .then(() => this.cleanText())
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
   };
 
-  getRawText = (jsonData) => {
-    let text = "";
+  getRawText = jsonData => {
+    let text = '';
 
-    Object.keys(jsonData).forEach((pageID) => {
+    Object.keys(jsonData).forEach(pageID => {
       const wikiPage = jsonData[pageID];
 
       text = this.state.text + wikiPage.extract;
@@ -48,17 +46,17 @@ export default class App extends Component {
     // Accordingly, check if the the text returned is not "undefined". If so, simply update the State with that text.
     // However, if the text returned is "undefined", update the State with an error message.
     text =
-      text === "undefined"
+      text === 'undefined'
         ? "Sorry, we haven't been able to find that Wikipedia page. Please enter a new search term."
         : text;
 
     // If the WikiAPI has returned multiple Wiki pages, RAW_TEXT will contain the phrase "may refer to:" in the first paragraph
     // If so, display a specific 'error message' to the User on the DOM
-    const firstParagraph = text.substring(0, text.indexOf("\n"));
+    const firstParagraph = text.substring(0, text.indexOf('\n'));
 
-    if (firstParagraph.includes("may refer to:")) {
+    if (firstParagraph.includes('may refer to:')) {
       text =
-        "Sorry, many pages were found with that search term. Try again with something more specific.";
+        'Sorry, many pages were found with that search term. Try again with something more specific.';
     }
     // --------------- \.ERROR HANDLING ---------------
 
@@ -77,15 +75,15 @@ export default class App extends Component {
     // on each is unknown.
     // Accordingly, the below is an array of possible any 'footer heading'
     const FOOTER_HEADINGS = [
-      "== See also ==",
-      "== Notes ==",
-      "== External links ==",
-      "== References =="
+      '== See also ==',
+      '== Notes ==',
+      '== External links ==',
+      '== References =='
     ];
     // Iterate over each of the FOOTER_HEADINGS
     // If the FOOTER_HEADING exists in cleanedText (that is, indexOf !== -1)
     // using substring(), remove any text thereafter the indexOf
-    FOOTER_HEADINGS.forEach((x) => {
+    FOOTER_HEADINGS.forEach(x => {
       const headingIndex = rawText.indexOf(x);
 
       if (headingIndex !== -1) {
@@ -95,10 +93,10 @@ export default class App extends Component {
 
     // The text contains several 'special characters'.
     // Remove any character that isn't a space, comma, fullstop, or alphanumeric:
-    let text = rawText.replace(/[^a-z0-9 .,]/gi, "");
+    let text = rawText.replace(/[^a-z0-9 .,]/gi, '');
 
     // The text is often missing the space after a fullstop. If so, insert it:
-    text = text.replace(/\.(\S)/g, ". $1");
+    text = text.replace(/\.(\S)/g, '. $1');
 
     this.setState({
       text: text

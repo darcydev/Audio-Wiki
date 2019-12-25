@@ -1,11 +1,9 @@
-import React, { Component } from "react";
-
-import "../scss/SpeakText.css";
+import React, { Component } from 'react';
 
 export default class SpeakText extends Component {
   state = {
     supported: true,
-    lang: "en-US",
+    lang: 'en-US',
     autoPlay: false,
     isSpeaking: false,
     isPaused: false
@@ -13,7 +11,7 @@ export default class SpeakText extends Component {
 
   // TODO: componentWillMount is being depreciated
   UNSAFE_componentWillMount() {
-    if ("speechSynthesis" in window) {
+    if ('speechSynthesis' in window) {
       // WebSpeech API
       this._speech = new SpeechSynthesisUtterance();
       this._speech.onend = () => this.setState({ isSpeaking: false });
