@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FaPlay, FaStop, FaPause } from 'react-icons/fa';
 import { Input } from 'antd';
 
-import RoundButton from '../../components/Buttons/RoundButton';
+import Button from '../../components/Buttons/Button';
 
 const { TextArea } = Input;
 
@@ -43,28 +43,40 @@ export default class Speak extends Component {
     window.speechSynthesis.speak(this._speech);
   };
 
-  // TODO... pause (not stop) the speaking
-  pause = () => console.log(10);
+  pause = () => {
+    this.setState({ isSpeaking: false, isPaused: true });
 
-  stop = () => window.speechSynthesis.cancel();
+    window.speechSynthesis.pause();
+  };
+
+  stop = () => {
+    this.setState({ isSpeaking: false });
+
+    window.speechSynthesis.cancel();
+  };
 
   render() {
     return (
       <Container>
         <ButtonRow>
           <ButtonContainer onClick={this.speak}>
-            <RoundButton
-              primary
+            <Button
+              shape="round"
               icon="play-circle"
               theme="filled"
               size="large"
             />
           </ButtonContainer>
           <ButtonContainer onClick={this.pause}>
-            <RoundButton icon="pause-circle" theme="filled" size="large" />
+            <Button
+              shape="round"
+              icon="pause-circle"
+              theme="filled"
+              size="large"
+            />
           </ButtonContainer>
           <ButtonContainer onClick={this.stop}>
-            <RoundButton danger icon="stop" theme="filled" size="large" />
+            <Button shape="round" icon="stop" theme="filled" size="large" />
           </ButtonContainer>
         </ButtonRow>
         <TextArea value={this.props.text} autoSize={true} />

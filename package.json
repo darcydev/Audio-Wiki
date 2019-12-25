@@ -5,10 +5,9 @@
   "dependencies": {
     "antd": "^3.26.4",
     "react": "^16.9.0",
-    "react-autosize-textarea": "^7.0.0",
     "react-dom": "^16.9.0",
     "react-icons": "^3.8.0",
-    "react-image-responsive": "^2.0.2",
+    "react-responsive-picture": "^3.2.2",
     "react-scripts": "^3.3.0",
     "styled-components": "^4.4.1",
     "styled-media-query": "^2.1.2"
