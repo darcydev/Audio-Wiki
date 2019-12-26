@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { FaWikipediaW } from 'react-icons/fa';
 
 import 'antd/dist/antd.css';
 
@@ -7,9 +8,11 @@ import Hero from './sections/Hero/Hero';
 import Speak from './sections/Speak/Speak';
 
 import SearchBar from './components/Bars/SearchBar';
+import Button from './components/Buttons/Button';
 
 export default class App extends Component {
   state = {
+    source: undefined,
     searchTerm: '',
     fetchedText: ''
   };
@@ -50,7 +53,11 @@ export default class App extends Component {
         // if multiple pages found, display an error message
         const firstPara = text.substring(0, text.indexOf('\n'));
 
-        if (firstPara.includes('may refer to:')) text = 'Multiple pages found.';
+        if (
+          firstPara.includes('may refer to') ||
+          firstPara.includes('most commonly refers to')
+        )
+          text = 'Multiple pages found. Please be more specific.';
       } else {
         text = 'Page not found';
       }
@@ -98,6 +105,11 @@ export default class App extends Component {
       <Container>
         <Hero />
         <Content>
+          <div className="source-boxes">
+            <h3>Choose the source!</h3>
+            <Button type="dashed" size="large" reactIcon={<FaWikipediaW />} />
+            <Button />
+          </div>
           <SearchBar onSubmit={this.onSearchSubmit} />
           <Speak text={this.state.fetchedText} />
         </Content>
@@ -108,4 +120,8 @@ export default class App extends Component {
 
 const Container = styled.main``;
 
-const Content = styled.section``;
+const Content = styled.section`
+  .source-boxes {
+    padding: 20px;
+  }
+`;
