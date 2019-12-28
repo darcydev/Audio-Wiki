@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { FaPlay, FaStop, FaPause } from 'react-icons/fa';
 import { Input } from 'antd';
 
-import Button from '../../components/Buttons/Button';
+import SimpleButton from '../../components/Buttons/SimpleButton';
+import SectionHeading from '../../components/Headings/SectionHeading';
 
 const { TextArea } = Input;
 
@@ -24,10 +24,6 @@ export default class Speak extends Component {
     } else {
       this.setState({ supported: false });
     }
-  }
-
-  componentDidUpdate() {
-    console.log(this.props);
   }
 
   componentDidMount() {
@@ -58,25 +54,16 @@ export default class Speak extends Component {
   render() {
     return (
       <Container>
+        <SectionHeading heading="Speak Section" />
         <ButtonRow>
           <ButtonContainer onClick={this.speak}>
-            <Button
-              shape="round"
-              icon="play-circle"
-              theme="filled"
-              size="large"
-            />
+            <SimpleButton icon="play-circle" />
           </ButtonContainer>
           <ButtonContainer onClick={this.pause}>
-            <Button
-              shape="round"
-              icon="pause-circle"
-              theme="filled"
-              size="large"
-            />
+            <SimpleButton icon="pause-circle" />
           </ButtonContainer>
           <ButtonContainer onClick={this.stop}>
-            <Button shape="round" icon="stop" theme="filled" size="large" />
+            <SimpleButton icon="stop" />
           </ButtonContainer>
         </ButtonRow>
         <TextArea value={this.props.text} autoSize={true} />

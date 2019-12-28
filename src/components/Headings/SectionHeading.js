@@ -9,7 +9,9 @@ export default function SectionHeading({ heading }) {
   );
 }
 
-const Container = styled.div``;
+const Container = styled.div`
+  text-align: center;
+`;
 
 const MainHeading = styled.h2`
   text-transform: capitalize;
