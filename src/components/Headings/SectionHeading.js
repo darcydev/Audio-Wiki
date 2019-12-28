@@ -11,10 +11,11 @@ export default function SectionHeading({ heading }) {
 
 const Container = styled.div`
   text-align: center;
+  padding: 20px 0;
 `;
 
 const MainHeading = styled.h2`
   text-transform: capitalize;
   font-size: 2rem;
-  border-bottom: 4px solid orange;
+  border-bottom: 2px dashed orange;
 `;

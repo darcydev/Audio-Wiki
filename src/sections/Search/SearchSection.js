@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Input } from 'antd';
+import { Input, Card } from 'antd';
 
 import SectionHeading from '../../components/Headings/SectionHeading';
 import SimpleButton from '../../components/Buttons/SimpleButton';
@@ -12,11 +12,16 @@ export default class SearchSection extends Component {
     source: '',
     category: '',
     searchTerm: '',
+    articles: {},
     fetchedText: ''
   };
 
   onSourceClick = source => this.setState({ source });
   onCategoryClick = category => this.setState({ category });
+  onArticleClick = text => {
+    this.setState({ fetchedText: text });
+    this.props.fetchedText(this.state.fetchedText);
+  };
 
   onSearchSubmit = () => {
     if (this.state.source === 'Wikipedia') this.fetchWikipediaText();
@@ -68,20 +73,23 @@ export default class SearchSection extends Component {
   fetchGuardianText() {
     const GUARD_API_KEY = '16e4bbdd-baa8-4afd-a07c-7ec41df89c41';
     const q = this.state.searchTerm;
-    const URL = `https://content.guardianapis.com/search?q=${q}&tag=politics/politics&api-key=${GUARD_API_KEY}`;
+    const tag =
+      this.state.category === ''
+        ? ''
+        : `&tag=${this.state.category}/${this.state.category}`;
+
+    const URL = `https://content.guardianapis.com/search?q=${q}${tag}&show-blocks=all&api-key=${GUARD_API_KEY}`;
 
     fetch(URL)
       .then(resp => resp.json())
-      .then(jsonData => this.extractGuardText(jsonData))
+      .then(jsonData => this.setState({ articles: jsonData.response.results }))
       .catch(err => console.log(err));
   }
 
-  extractGuardText = jsonData => {
-    console.log(jsonData);
-  };
-
   render() {
     let CATEGORY_MARKUP;
+
+    console.log(this.state.articles);
 
     const INPUT_MARKUP = (
       <Search
@@ -93,10 +101,40 @@ export default class SearchSection extends Component {
       />
     );
 
+    const ARTICLES_MARKUP =
+      this.state.articles.length > 0 ? (
+        <ArticlesContainer>
+          <Card title="Articles">
+            {this.state.articles.map(article => (
+              <ButtonContainer
+                onClick={() =>
+                  this.onArticleClick(article.blocks.body[0].bodyTextSummary)
+                }
+              >
+                <Card.Grid
+                  style={{
+                    width: '50%',
+                    height: '25%',
+                    fontSize: '13px',
+                    textAlign: 'center',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}
+                >
+                  {article.webTitle}
+                </Card.Grid>
+              </ButtonContainer>
+            ))}
+          </Card>
+        </ArticlesContainer>
+      ) : null;
+
     const GUARDIAN_MARKUP = (
       <>
         <ButtonRow>
-          <ButtonContainer onClick={() => this.onCategoryClick('breaking')}>
+          {/* set to blank as breaking equals everything */}
+          <ButtonContainer onClick={() => this.onCategoryClick('')}>
             <SimpleButton text="Breaking" />
           </ButtonContainer>
           <ButtonContainer onClick={() => this.onCategoryClick('politics')}>
@@ -116,7 +154,7 @@ export default class SearchSection extends Component {
 
     return (
       <Container>
-        <SectionHeading heading="select source" />
+        <SectionHeading heading="search" />
         <ButtonRow>
           <ButtonContainer onClick={() => this.onSourceClick('Wikipedia')}>
             <SimpleButton type="primary" text="Wikipedia" />
@@ -127,6 +165,7 @@ export default class SearchSection extends Component {
         </ButtonRow>
         {CATEGORY_MARKUP}
         {INPUT_MARKUP}
+        {ARTICLES_MARKUP}
       </Container>
     );
   }
@@ -139,6 +178,9 @@ const Container = styled.section`
 const ButtonRow = styled.div`
   display: flex;
   justify-content: space-around;
+  padding: 30px 0;
 `;
 
 const ButtonContainer = styled.div``;
+
+const ArticlesContainer = styled.div``;

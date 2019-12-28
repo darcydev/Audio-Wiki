@@ -54,7 +54,7 @@ export default class Speak extends Component {
   render() {
     return (
       <Container>
-        <SectionHeading heading="Speak Section" />
+        <SectionHeading heading="listen" />
         <ButtonRow>
           <ButtonContainer onClick={this.speak}>
             <SimpleButton icon="play-circle" />
@@ -72,7 +72,7 @@ export default class Speak extends Component {
   }
 }
 
-const Container = styled.div``;
+const Container = styled.section``;
 
 const ButtonRow = styled.div`
   display: flex;
