@@ -11,7 +11,7 @@ export default function SectionHeading({ heading }) {
 
 const Container = styled.div`
   text-align: center;
-  padding: 20px 0;
+  padding: 20px 0 10px 0;
 `;
 
 const MainHeading = styled.h2`

@@ -10,7 +10,6 @@ const { TextArea } = Input;
 export default class Speak extends Component {
   state = {
     supported: true,
-    autoPlay: false,
     isSpeaking: false,
     isPaused: false
   };
@@ -26,17 +25,15 @@ export default class Speak extends Component {
     }
   }
 
-  componentDidMount() {
-    if (this.state.supported && this.state.autoPlay) this.speak();
-  }
-
   speak = () => {
-    this._speech.text = this.props.text;
-    this._speech.lang = 'en-US';
-
-    this.setState({ isSpeaking: true });
+    if (!this.state.isPaused) {
+      this._speech.text = this.props.text;
+      this._speech.lang = 'en-US';
+    }
 
     window.speechSynthesis.speak(this._speech);
+
+    this.setState({ isSpeaking: true });
   };
 
   pause = () => {

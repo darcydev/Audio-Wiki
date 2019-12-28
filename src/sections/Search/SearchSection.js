@@ -4,6 +4,7 @@ import { Input, Card } from 'antd';
 
 import SectionHeading from '../../components/Headings/SectionHeading';
 import SimpleButton from '../../components/Buttons/SimpleButton';
+import WikipediaIcon from '../../components/Icons/WikipediaIcon';
 
 const { Search } = Input;
 
@@ -105,8 +106,9 @@ export default class SearchSection extends Component {
       this.state.articles.length > 0 ? (
         <ArticlesContainer>
           <Card title="Articles">
-            {this.state.articles.map(article => (
+            {this.state.articles.map((article, i) => (
               <ButtonContainer
+                key={i}
                 onClick={() =>
                   this.onArticleClick(article.blocks.body[0].bodyTextSummary)
                 }
@@ -157,10 +159,17 @@ export default class SearchSection extends Component {
         <SectionHeading heading="search" />
         <ButtonRow>
           <ButtonContainer onClick={() => this.onSourceClick('Wikipedia')}>
-            <SimpleButton type="primary" text="Wikipedia" />
+            <SimpleButton
+              type="dashed"
+              customTextIcon={<WikipediaIcon />}
+              text="Wikipedia"
+            />
           </ButtonContainer>
           <ButtonContainer onClick={() => this.onSourceClick('Guardian')}>
-            <SimpleButton type="primary" text="Guardian" />
+            <SimpleButton type="dashed" text="Guardian" />
+          </ButtonContainer>
+          <ButtonContainer>
+            <SimpleButton type="dashed" icon="medium" text="Medium" />
           </ButtonContainer>
         </ButtonRow>
         {CATEGORY_MARKUP}
