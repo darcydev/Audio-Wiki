@@ -5,7 +5,7 @@ import 'antd/dist/antd.css';
 
 import Hero from './sections/Hero/Hero';
 import Speak from './sections/Speak/Speak';
-import SearchSection from './sections/Search/Search';
+import SearchSection from './sections/Search/SearchSection';
 
 export default class App extends Component {
   state = {

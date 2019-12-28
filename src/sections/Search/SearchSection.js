@@ -65,7 +65,20 @@ export default class SearchSection extends Component {
     }
   };
 
-  fetchGuardianText() {}
+  fetchGuardianText() {
+    const GUARD_API_KEY = '16e4bbdd-baa8-4afd-a07c-7ec41df89c41';
+    const q = this.state.searchTerm;
+    const URL = `https://content.guardianapis.com/search?q=${q}&tag=politics/politics&api-key=${GUARD_API_KEY}`;
+
+    fetch(URL)
+      .then(resp => resp.json())
+      .then(jsonData => this.extractGuardText(jsonData))
+      .catch(err => console.log(err));
+  }
+
+  extractGuardText = jsonData => {
+    console.log(jsonData);
+  };
 
   render() {
     let CATEGORY_MARKUP;
