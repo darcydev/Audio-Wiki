@@ -6,6 +6,7 @@ import 'antd/dist/antd.css';
 
 import Hero from './sections/Hero/Hero';
 import Speak from './sections/Speak/Speak';
+import Select from './sections/Select/Select';
 
 import SearchBar from './components/Bars/SearchBar';
 import Button from './components/Buttons/Button';
@@ -17,15 +18,18 @@ export default class App extends Component {
     fetchedText: ''
   };
 
+  onSourceSelect = source => {
+    console.log(11);
+    this.setState({ source });
+    console.log(this.state);
+  };
+
   onSearchSubmit = term => {
     this.setState({ searchTerm: term });
-
     this.fetchText();
   };
 
   fetchText() {
-    console.log(this.state);
-
     const BASE_URL =
       'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext&redirects=true&origin=*&titles=';
 
@@ -105,11 +109,7 @@ export default class App extends Component {
       <Container>
         <Hero />
         <Content>
-          <div className="source-boxes">
-            <h3>Choose the source!</h3>
-            <Button type="dashed" size="large" reactIcon={<FaWikipediaW />} />
-            <Button />
-          </div>
+          <Select parentCallback={this.onSourceSelect} />
           <SearchBar onSubmit={this.onSearchSubmit} />
           <Speak text={this.state.fetchedText} />
         </Content>

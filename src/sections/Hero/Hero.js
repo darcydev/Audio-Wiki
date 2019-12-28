@@ -16,4 +16,15 @@ export default function Hero() {
 const Container = styled.header`
   text-align: center;
   padding: 30px;
+
+  h1 {
+    font-family: 'Ma Shan Zheng';
+    font-size: 60px;
+    margin-bottom: 0;
+  }
+
+  h2 {
+    font-family: 'Cabin';
+    font-size: 30px;
+  }
 `;
