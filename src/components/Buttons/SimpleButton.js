@@ -8,10 +8,20 @@ export default function SimpleButton({
   customTextIcon = undefined,
   theme = 'filled',
   size = 'large',
-  text = undefined
+  text = undefined,
+  href = undefined
 }) {
   return (
-    <AntButton shape={shape} icon={icon} type={type} theme={theme} size={size}>
+    <AntButton
+      shape={shape}
+      icon={icon}
+      type={type}
+      theme={theme}
+      size={size}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       {customTextIcon}
       {text}
     </AntButton>

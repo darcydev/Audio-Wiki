@@ -8,7 +8,7 @@ export default function Hero() {
     <Container>
       <Logo />
       <h1>Audo Wiki</h1>
-      <h2>the multitasker's encyclopedia</h2>
+      <h2>the multitasker's way to listen to articles</h2>
     </Container>
   );
 }

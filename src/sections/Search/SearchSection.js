@@ -5,6 +5,7 @@ import { Input, Card } from 'antd';
 import SectionHeading from '../../components/Headings/SectionHeading';
 import SimpleButton from '../../components/Buttons/SimpleButton';
 import WikipediaIcon from '../../components/Icons/WikipediaIcon';
+import GuardianIcon from '../../components/Icons/GuardianIcon';
 
 const { Search } = Input;
 
@@ -13,20 +14,20 @@ export default class SearchSection extends Component {
     source: '',
     category: '',
     searchTerm: '',
-    articles: {},
-    fetchedText: ''
+    articles: {}
   };
 
   onSourceClick = source => this.setState({ source });
   onCategoryClick = category => this.setState({ category });
-  onArticleClick = text => {
-    this.setState({ fetchedText: text });
-    this.props.fetchedText(this.state.fetchedText);
+  onArticleClick = (text, url) => {
+    this.props.fetchedText(text);
+    this.props.fetchedUrl(url);
   };
 
   onSearchSubmit = () => {
     if (this.state.source === 'Wikipedia') this.fetchWikipediaText();
-    if (this.state.source === 'Guardian') this.fetchGuardianText();
+    else if (this.state.source === 'Guardian') this.fetchGuardianText();
+    else if (this.state.source === 'News.com') this.fetchNewsText();
   };
 
   fetchWikipediaText() {
@@ -72,14 +73,14 @@ export default class SearchSection extends Component {
   };
 
   fetchGuardianText() {
-    const GUARD_API_KEY = '16e4bbdd-baa8-4afd-a07c-7ec41df89c41';
+    const API_KEY = process.env.REACT_APP_GUARDIAN_API_KEY;
     const q = this.state.searchTerm;
     const tag =
       this.state.category === ''
         ? ''
         : `&tag=${this.state.category}/${this.state.category}`;
 
-    const URL = `https://content.guardianapis.com/search?q=${q}${tag}&show-blocks=all&api-key=${GUARD_API_KEY}`;
+    const URL = `https://content.guardianapis.com/search?q=${q}${tag}&show-blocks=all&api-key=${API_KEY}`;
 
     fetch(URL)
       .then(resp => resp.json())
@@ -87,10 +88,18 @@ export default class SearchSection extends Component {
       .catch(err => console.log(err));
   }
 
-  render() {
-    let CATEGORY_MARKUP;
+  fetchNewsText() {
+    const API_KEY = process.env.REACT_APP_NEWS_API_KEY;
+    const URL = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}`;
 
-    console.log(this.state.articles);
+    fetch(URL)
+      .then(resp => resp.json())
+      .then(jsonData => this.setState({ articles: jsonData.articles }))
+      .catch(err => console.log(err));
+  }
+
+  render() {
+    let CATEGORY_MARKUP, ARTICLES_MARKUP;
 
     const INPUT_MARKUP = (
       <Search
@@ -102,8 +111,26 @@ export default class SearchSection extends Component {
       />
     );
 
-    const ARTICLES_MARKUP =
-      this.state.articles.length > 0 ? (
+    const NEWS_COM_ARTICLES_MARKUP =
+      this.state.source === 'News.com' && this.state.articles.length > 0 ? (
+        <ArticlesContainer>
+          <Card title="Articles">
+            {this.state.articles.map((article, i) => (
+              <ButtonContainer
+                key={i}
+                onClick={() =>
+                  this.onArticleClick(article.content, article.url)
+                }
+              >
+                <Card.Grid style={CARD_STYLE}>{article.title}</Card.Grid>
+              </ButtonContainer>
+            ))}
+          </Card>
+        </ArticlesContainer>
+      ) : null;
+
+    const GUARDIAN_ARTICLES_MARKUP =
+      this.state.source === 'Guardian' && this.state.articles.length > 0 ? (
         <ArticlesContainer>
           <Card title="Articles">
             {this.state.articles.map((article, i) => (
@@ -113,19 +140,7 @@ export default class SearchSection extends Component {
                   this.onArticleClick(article.blocks.body[0].bodyTextSummary)
                 }
               >
-                <Card.Grid
-                  style={{
-                    width: '50%',
-                    height: '25%',
-                    fontSize: '13px',
-                    textAlign: 'center',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}
-                >
-                  {article.webTitle}
-                </Card.Grid>
+                <Card.Grid style={CARD_STYLE}>{article.webTitle}</Card.Grid>
               </ButtonContainer>
             ))}
           </Card>
@@ -152,7 +167,12 @@ export default class SearchSection extends Component {
       </>
     );
 
-    if (this.state.source === 'Guardian') CATEGORY_MARKUP = GUARDIAN_MARKUP;
+    if (this.state.source === 'Guardian') {
+      CATEGORY_MARKUP = GUARDIAN_MARKUP;
+      ARTICLES_MARKUP = GUARDIAN_ARTICLES_MARKUP;
+    } else if (this.state.source === 'News.com') {
+      ARTICLES_MARKUP = NEWS_COM_ARTICLES_MARKUP;
+    }
 
     return (
       <Container>
@@ -166,10 +186,14 @@ export default class SearchSection extends Component {
             />
           </ButtonContainer>
           <ButtonContainer onClick={() => this.onSourceClick('Guardian')}>
-            <SimpleButton type="dashed" text="Guardian" />
+            <SimpleButton
+              type="dashed"
+              customTextIcon={<GuardianIcon />}
+              text="Guardian"
+            />
           </ButtonContainer>
-          <ButtonContainer>
-            <SimpleButton type="dashed" icon="medium" text="Medium" />
+          <ButtonContainer onClick={() => this.onSourceClick('News.com')}>
+            <SimpleButton type="dashed" text="News.com" />
           </ButtonContainer>
         </ButtonRow>
         {CATEGORY_MARKUP}
@@ -193,3 +217,13 @@ const ButtonRow = styled.div`
 const ButtonContainer = styled.div``;
 
 const ArticlesContainer = styled.div``;
+
+const CARD_STYLE = {
+  width: '50%',
+  height: '25%',
+  fontSize: '13px',
+  textAlign: 'center',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis'
+};

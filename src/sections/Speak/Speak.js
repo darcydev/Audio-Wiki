@@ -26,10 +26,8 @@ export default class Speak extends Component {
   }
 
   speak = () => {
-    if (!this.state.isPaused) {
-      this._speech.text = this.props.text;
-      this._speech.lang = 'en-US';
-    }
+    this._speech.text = this.props.text;
+    this._speech.lang = 'en-US';
 
     window.speechSynthesis.speak(this._speech);
 
@@ -49,6 +47,16 @@ export default class Speak extends Component {
   };
 
   render() {
+    const READ_ARTICLE_MARKUP = this.props.url ? (
+      <ArticleLinkContainer>
+        <SimpleButton
+          type="link"
+          href={this.props.url}
+          text="Read full article"
+        />
+      </ArticleLinkContainer>
+    ) : null;
+
     return (
       <Container>
         <SectionHeading heading="listen" />
@@ -64,6 +72,7 @@ export default class Speak extends Component {
           </ButtonContainer>
         </ButtonRow>
         <TextArea value={this.props.text} autoSize={true} />
+        {READ_ARTICLE_MARKUP}
       </Container>
     );
   }
@@ -80,3 +89,5 @@ const ButtonRow = styled.div`
 const ButtonContainer = styled.div`
   padding: 10px;
 `;
+
+const ArticleLinkContainer = styled.div``;

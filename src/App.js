@@ -9,18 +9,23 @@ import SearchSection from './sections/Search/SearchSection';
 
 export default class App extends Component {
   state = {
-    fetchedText: ''
+    fetchedText: '',
+    fetchedUrl: ''
   };
 
   onTextFetched = fetchedText => this.setState({ fetchedText });
+  onUrlFetched = fetchedUrl => this.setState({ fetchedUrl });
 
   render() {
     return (
       <Container>
         <Hero />
         <Content>
-          <SearchSection fetchedText={this.onTextFetched} />
-          <Speak text={this.state.fetchedText} />
+          <SearchSection
+            fetchedText={this.onTextFetched}
+            fetchedUrl={this.onUrlFetched}
+          />
+          <Speak text={this.state.fetchedText} url={this.state.fetchedUrl} />
         </Content>
       </Container>
     );
