@@ -1,49 +1,58 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Input, Icon } from 'antd';
+import { Input, Icon, Select, Slider } from 'antd';
+import Speech from 'speak-tts';
 
 import SimpleButton from '../../components/Buttons/SimpleButton';
 
 const { TextArea } = Input;
+const { Option } = Select;
+
+const speech = new Speech();
 
 export default class Speak extends Component {
   state = {
-    supported: true,
-    isSpeaking: false,
-    isPaused: false
+    supported: false,
+    voicesSupported: [],
+    voice: undefined,
+    rate: 1,
+    pitch: 1
   };
 
-  // TODO: componentWillMount is being depreciated
-  UNSAFE_componentWillMount() {
-    if ('speechSynthesis' in window) {
-      // WebSpeech API
-      this._speech = new SpeechSynthesisUtterance();
-      this._speech.onend = () => this.setState({ isSpeaking: false });
-    } else {
-      this.setState({ supported: false });
-    }
+  componentDidMount() {
+    if (speech.hasBrowserSupport()) this.setState({ supported: true });
+
+    speech.init().then(data => this.setState({ voicesSupported: data.voices }));
   }
 
   speak = () => {
-    this._speech.text = this.props.text;
-    this._speech.lang = 'en-US';
+    if (!this.state.supported) return;
 
-    window.speechSynthesis.speak(this._speech);
+    speech.setRate(this.state.rate);
+    speech.setPitch(this.state.pitch);
+    speech.setVolume(1);
+    speech.setVoice(this.state.voice);
 
-    this.setState({ isSpeaking: true });
+    if (speech.paused()) speech.resume();
+    else {
+      speech
+        .speak({
+          text: this.props.text,
+          queue: false
+        })
+        .then(() =>
+          this.setState({ isSpeaking: true }).catch(error =>
+            console.error(error)
+          )
+        );
+    }
   };
 
-  pause = () => {
-    this.setState({ isSpeaking: false, isPaused: true });
-
-    window.speechSynthesis.pause();
-  };
-
-  stop = () => {
-    this.setState({ isSpeaking: false });
-
-    window.speechSynthesis.cancel();
-  };
+  pause = () => speech.pause();
+  stop = () => speech.cancel();
+  onVoiceSelect = value => this.setState({ voice: value });
+  onPitchChange = value => this.setState({ pitch: value });
+  onRateChange = value => this.setState({ rate: value });
 
   render() {
     const READ_ARTICLE_MARKUP = this.props.url ? (
@@ -55,6 +64,24 @@ export default class Speak extends Component {
         />
       </ArticleLinkContainer>
     ) : null;
+
+    console.log(this.state);
+
+    const VOICE_OPTIONS_MARKUP =
+      this.state.voicesSupported.length > 0 ? (
+        <Select
+          showSearch
+          style={{ width: 300 }}
+          placeholder="Select voice"
+          onChange={this.onVoiceSelect}
+        >
+          {this.state.voicesSupported.map(voice => (
+            <Option key={voice.voiceURI} value={voice.voiceURI}>
+              {voice.name}
+            </Option>
+          ))}
+        </Select>
+      ) : null;
 
     return (
       <Container>
@@ -89,6 +116,17 @@ export default class Speak extends Component {
             />
           </ButtonContainer>
         </ButtonRow>
+        <ControlPanel>
+          <SelectBarContainer>{VOICE_OPTIONS_MARKUP}</SelectBarContainer>
+          <SliderContainer>
+            <h4>Pitch</h4>
+            <Slider defaultValue={1} max={2} onChange={this.onPitchChange} />
+          </SliderContainer>
+          <SliderContainer>
+            <h4>Rate</h4>
+            <Slider defaultValue={1} max={5} onChange={this.onRateChange} />
+          </SliderContainer>
+        </ControlPanel>
         <TextArea value={this.props.text} autoSize={true} />
         {READ_ARTICLE_MARKUP}
       </Container>
@@ -108,4 +146,10 @@ const ButtonContainer = styled.div`
   padding: 10px;
 `;
 
+const ControlPanel = styled.div`
+  padding: 10px 0;
+`;
+
 const ArticleLinkContainer = styled.div``;
+const SelectBarContainer = styled.div``;
+const SliderContainer = styled.div``;
