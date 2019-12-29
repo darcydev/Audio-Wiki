@@ -176,7 +176,6 @@ export default class SearchSection extends Component {
 
     return (
       <Container>
-        <SectionHeading heading="search" />
         <ButtonRow>
           <ButtonContainer onClick={() => this.onSourceClick('Wikipedia')}>
             <SimpleButton

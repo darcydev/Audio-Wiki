@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { Input } from 'antd';
+import { Input, Icon } from 'antd';
 
 import SimpleButton from '../../components/Buttons/SimpleButton';
-import SectionHeading from '../../components/Headings/SectionHeading';
 
 const { TextArea } = Input;
 
@@ -59,16 +58,35 @@ export default class Speak extends Component {
 
     return (
       <Container>
-        <SectionHeading heading="listen" />
         <ButtonRow>
           <ButtonContainer onClick={this.speak}>
-            <SimpleButton icon="play-circle" />
+            <SimpleButton
+              customTextIcon={
+                <Icon
+                  type="play-circle"
+                  theme="twoTone"
+                  twoToneColor="#52c41a"
+                />
+              }
+            />
           </ButtonContainer>
           <ButtonContainer onClick={this.pause}>
-            <SimpleButton icon="pause-circle" />
+            <SimpleButton
+              customTextIcon={
+                <Icon
+                  type="pause-circle"
+                  theme="twoTone"
+                  twoToneColor="#ffae00"
+                />
+              }
+            />
           </ButtonContainer>
           <ButtonContainer onClick={this.stop}>
-            <SimpleButton icon="stop" />
+            <SimpleButton
+              customTextIcon={
+                <Icon type="stop" theme="twoTone" twoToneColor="#eb2f96" />
+              }
+            />
           </ButtonContainer>
         </ButtonRow>
         <TextArea value={this.props.text} autoSize={true} />
